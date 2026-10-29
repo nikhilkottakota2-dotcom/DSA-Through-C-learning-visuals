@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive visual lab for sorting, searching, stacks, and queues. Learn definitions, applications, complexity, and step-by-step operations.">
+  <title>Algorithm Visual Lab — Learn by Watching</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Algorithm Visual Lab home"><span class="brand-mark">A<span>/</span>V</span><span>Algorithm<span class="brand-muted"> Visual Lab</span></span></a>
+    <nav><a href="#explore">Explore</a><a href="#guide">Complexity guide</a><a href="#about">About</a></nav>
+    <button id="themeToggle" class="icon-button" aria-label="Toggle theme" title="Toggle theme">☼</button>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> INTERACTIVE DSA PLAYGROUND</div>
+        <h1>See the logic.<br><span class="gradient-text">Understand the algorithm.</span></h1>
+        <p class="hero-lede">A visual, step-by-step lab for sorting, searching, stacks, and queues. Explore how each operation works, where it is used, and how much time and memory it needs.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#explore">Start exploring <span>↘</span></a><button class="button button-quiet" id="randomizeHero">Surprise me ↗</button></div>
+        <div class="hero-stats"><div><strong>13</strong><span>Visual topics</span></div><div><strong>4</strong><span>Core families</span></div><div><strong>∞</strong><span>Ways to practise</span></div></div>
+      </div>
+      <div class="hero-visual" aria-label="Decorative algorithm bars illustration">
+        <div class="visual-top"><span class="window-dots"><i></i><i></i><i></i></span><span>sorting.exe</span><span class="status-pill">● LIVE DEMO</span></div>
+        <div class="hero-bars" id="heroBars"></div>
+        <div class="visual-bottom"><span><b class="legend-a"></b> compare</span><span><b class="legend-b"></b> current</span><span><b class="legend-c"></b> sorted</span></div>
+        <div class="floating-chip chip-one">O(n log n) <small>average time</small></div>
+        <div class="floating-chip chip-two">STEP 04 / 12 <small>watch it change</small></div>
+      </div>
+    </section>
+
+    <section class="section" id="explore">
+      <div class="section-heading">
+        <div><div class="eyebrow">THE PLAYGROUND</div><h2>Choose a concept</h2><p>Pick a topic, then run, pause, or step through its visual model.</p></div>
+        <label class="search-box"><span>⌕</span><input id="topicSearch" type="search" placeholder="Search algorithms…" aria-label="Search topics"></label>
+      </div>
+      <div class="filter-row" id="filters">
+        <button class="filter active" data-filter="all">All topics <span>13</span></button>
+        <button class="filter" data-filter="sorting">Sorting <span>5</span></button>
+        <button class="filter" data-filter="searching">Searching <span>3</span></button>
+        <button class="filter" data-filter="stack">Stacks <span>2</span></button>
+        <button class="filter" data-filter="queue">Queues <span>3</span></button>
+      </div>
+      <div class="topic-grid" id="topicGrid"></div>
+    </section>
+
+    <section class="workspace section" id="workspace">
+      <div class="workspace-head"><div><div class="eyebrow">LIVE WORKBENCH</div><h2 id="labTitle">Bubble sort</h2><p id="labSubtitle">Watch neighbouring values move into order.</p></div><span class="complexity-chip" id="labBadge">O(n²) average</span></div>
+      <div class="lab-layout">
+        <div class="lab-main panel">
+          <div class="panel-toolbar"><div class="panel-label"><span class="pulse-dot"></span> VISUAL MODEL</div><div class="step-counter" id="stepCounter">Ready to run</div></div>
+          <div class="visual-stage" id="visualStage" aria-live="polite"></div>
+          <div class="progress-track"><div id="progressFill"></div></div>
+          <div class="control-row">
+            <div class="play-controls"><button id="resetBtn" class="control-btn" title="Reset">↺</button><button id="prevBtn" class="control-btn" title="Previous step">←</button><button id="playBtn" class="button button-primary play-btn">▶ Run</button><button id="nextBtn" class="control-btn" title="Next step">→</button></div>
+            <div class="speed-control"><label for="speedRange">Speed</label><input id="speedRange" type="range" min="1" max="5" value="3"><span id="speedLabel">1×</span></div>
+          </div>
+          <div class="data-row"><label for="dataInput">Input values <span>(comma-separated)</span></label><div class="input-line"><input id="dataInput" value="8, 3, 6, 1, 7, 2" spellcheck="false"><button id="applyData" class="button button-outline">Apply</button><button id="shuffleData" class="button button-outline">Shuffle</button></div><p class="input-help" id="inputHelp">Use 2–12 numbers. For searching, the array will be sorted automatically when required.</p></div>
+        </div>
+        <aside class="lab-side">
+          <div class="panel insight-panel"><div class="panel-label">STEP EXPLANATION</div><div class="step-icon" id="stepIcon">01</div><h3 id="stepTitle">Ready when you are</h3><p id="stepDescription">Run the visual model to see each operation explained here.</p><div class="operation-meta"><span>OPERATION</span><strong id="operationName">Initial state</strong></div></div>
+          <div class="panel metrics-panel"><div class="panel-label">LIVE METRICS</div><div class="metric"><span>Comparisons</span><strong id="metricComparisons">0</strong></div><div class="metric"><span>Moves / swaps</span><strong id="metricMoves">0</strong></div><div class="metric"><span>Current index</span><strong id="metricIndex">—</strong></div><div class="metric"><span>Extra space</span><strong id="metricSpace">O(1)</strong></div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section details-section" id="details">
+      <div class="section-heading"><div><div class="eyebrow">THE CONCEPT</div><h2 id="detailTitle">Bubble sort, unpacked</h2><p id="detailIntro">Understand the idea beyond the animation.</p></div></div>
+      <div class="details-grid">
+        <article class="panel detail-card"><div class="detail-symbol">⌘</div><h3>Definition</h3><p id="detailDefinition"></p></article>
+        <article class="panel detail-card"><div class="detail-symbol">◎</div><h3>Applications</h3><ul id="detailApplications"></ul></article>
+        <article class="panel detail-card"><div class="detail-symbol">⌁</div><h3>Complexity</h3><div class="complexity-table" id="complexityTable"></div></article>
+        <article class="panel detail-card code-card"><div class="detail-symbol">{ }</div><h3>Core idea / pseudocode</h3><pre id="pseudoCode"></pre><button id="copyPseudo" class="copy-btn">Copy pseudocode ↗</button></article>
+      </div>
+      <div class="note-box"><span>✦</span><p id="extraNote">Complexity depends on the input and implementation. The notes here describe the standard version shown in the visual model.</p></div>
+    </section>
+
+    <section class="section guide-section" id="guide">
+      <div class="eyebrow">QUICK REFERENCE</div><h2>Complexity at a glance</h2><p class="guide-lede">A compact reference for the standard implementations in this lab.</p>
+      <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Best time</th><th>Average time</th><th>Worst time</th><th>Auxiliary space</th></tr></thead><tbody id="complexityOverview"></tbody></table></div>
+      <p class="table-footnote">Space excludes the input array unless the algorithm needs extra storage. Recursive call stacks are included where relevant. Queue/stack operations are typically O(1).</p>
+    </section>
+
+    <section class="section about-section" id="about"><div class="about-card"><div><div class="eyebrow">BUILT FOR LEARNING</div><h2>Learn it. Run it. Explain it.</h2><p>Use this playground to prepare for practicals, revise definitions, and understand why an algorithm behaves the way it does. Change the input and watch the steps change too.</p></div><div class="about-mark">A<span>/</span>V</div></div><footer><span>Algorithm Visual Lab</span><span>Made for curious minds · Runs entirely in your browser</span><a href="#home">Back to top ↑</a></footer></section>
+  </main>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
