@@ -1,17 +1,338 @@
 const topics = [
-{id:'bubble',name:'Bubble sort',group:'sorting',icon:'↕',tag:'Sorting',short:'Repeatedly compares neighbours and swaps them when they are out of order.',definition:'Bubble sort repeatedly compares adjacent elements and swaps them if they are in the wrong order. After each pass, the largest remaining value “bubbles” to the end.',applications:['Teaching the idea of comparison-based sorting','Very small lists where simplicity matters','Checking whether a list is already sorted (with an early-stop flag)'],best:'O(n)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Yes',note:'Stable and in-place. Its quadratic average time makes it unsuitable for large datasets.',pseudo:'for i = 0 to n - 2\\n  swapped = false\\n  for j = 0 to n - i - 2\\n    if A[j] > A[j + 1]\\n      swap(A[j], A[j + 1])\\n      swapped = true\\n  if not swapped: stop',intro:'Watch adjacent values trade places until every value is in order.'},
-{id:'insertion',name:'Insertion sort',group:'sorting',icon:'↳',tag:'Sorting',short:'Builds a sorted section by inserting each new value into its correct place.',definition:'Insertion sort grows a sorted prefix one item at a time. It takes the next value, shifts larger values to the right, and inserts the value into the gap.',applications:['Small arrays and nearly sorted data','Online sorting when values arrive one by one','As the small-array finish step in hybrid sorting algorithms'],best:'O(n)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Yes',note:'Adaptive: nearly sorted input can be processed in linear time. It is stable and in-place.',pseudo:'for i = 1 to n - 1\\n  key = A[i]\\n  j = i - 1\\n  while j >= 0 and A[j] > key\\n    A[j + 1] = A[j]\\n    j = j - 1\\n  A[j + 1] = key',intro:'The left side becomes sorted as each next value is inserted into its correct gap.'},
-{id:'selection',name:'Selection sort',group:'sorting',icon:'⌄',tag:'Sorting',short:'Finds the smallest remaining value and places it at the next position.',definition:'Selection sort divides the list into sorted and unsorted parts. On each pass, it finds the minimum in the unsorted part and swaps it into the first unsorted position.',applications:['Learning how selection and swapping work','Situations where minimizing swaps is useful','Small collections with costly writes'],best:'O(n²)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Usually no',note:'It performs O(n²) comparisons even when the input is already sorted, but usually only O(n) swaps.',pseudo:'for i = 0 to n - 2\\n  minIndex = i\\n  for j = i + 1 to n - 1\\n    if A[j] < A[minIndex]\\n      minIndex = j\\n  swap(A[i], A[minIndex])',intro:'Each pass selects the smallest value from the unsorted region.'},
-{id:'merge',name:'Merge sort',group:'sorting',icon:'⇄',tag:'Sorting',short:'Splits the list, sorts each half, then merges the sorted halves.',definition:'Merge sort uses divide and conquer: split the array into halves, recursively sort each half, then merge the two sorted halves into one ordered sequence.',applications:['Large datasets requiring predictable O(n log n) time','Stable sorting and linked-list sorting','External sorting when data does not fit in memory'],best:'O(n log n)',average:'O(n log n)',worst:'O(n log n)',space:'O(n)',badge:'O(n log n) time',stable:'Yes',note:'The standard array version uses O(n) extra memory. Its time complexity stays O(n log n) in all cases.',pseudo:'mergeSort(A):\\n  if length(A) <= 1: return A\\n  split A into left and right\\n  left = mergeSort(left)\\n  right = mergeSort(right)\\n  return merge(left, right)',intro:'See the array split into smaller parts and then merge back in sorted order.'},
-{id:'quick',name:'Quick sort',group:'sorting',icon:'⌁',tag:'Sorting',short:'Partitions values around a pivot, then sorts each side recursively.',definition:'Quick sort chooses a pivot and partitions the array so smaller values go to one side and larger values to the other. It recursively sorts each partition.',applications:['General-purpose in-memory sorting','Library sorting implementations (often as part of a hybrid)','Fast average-case sorting when good pivots are chosen'],best:'O(n log n)',average:'O(n log n)',worst:'O(n²)',space:'O(log n) avg',badge:'O(n log n) average',stable:'Usually no',note:'A poor pivot can produce O(n²) time. Randomized or median-based pivot choices reduce the chance of bad partitions.',pseudo:'quickSort(A, low, high):\\n  if low < high\\n    p = partition(A, low, high)\\n    quickSort(A, low, p - 1)\\n    quickSort(A, p + 1, high)',intro:'A pivot divides values into partitions, which are sorted recursively.'},
-{id:'binary',name:'Binary search',group:'searching',icon:'⌕',tag:'Searching',short:'Halves the search range each step in a sorted array.',definition:'Binary search compares the target with the middle element of a sorted array. If they differ, it discards the half that cannot contain the target and repeats.',applications:['Finding an item in sorted arrays','Lower-bound / upper-bound style range queries','Searching in monotonic answer spaces'],best:'O(1)',average:'O(log n)',worst:'O(log n)',space:'O(1)',badge:'O(log n) time',stable:'Requires sorted input',note:'The array must be sorted. Each comparison removes about half of the remaining candidates.',pseudo:'low = 0; high = n - 1\\nwhile low <= high\\n  mid = low + (high - low) // 2\\n  if A[mid] == target: return mid\\n  if A[mid] < target: low = mid + 1\\n  else: high = mid - 1\\nreturn not found',intro:'The search window shrinks by half after each middle-value comparison.'},
-{id:'binaryrec',name:'Binary search (recursive)',group:'searching',icon:'↻',tag:'Searching',short:'Uses recursive calls to search one half of a sorted array.',definition:'Recursive binary search uses a function call for each smaller search interval. It checks the middle value, then calls itself on only the possible half.',applications:['Practising recursion and base cases','Searching sorted arrays with recursive code','Understanding divide-and-conquer thinking'],best:'O(1)',average:'O(log n)',worst:'O(log n)',space:'O(log n)',badge:'O(log n) time',stable:'Requires sorted input',note:'Time is O(log n), while recursive calls use O(log n) stack space. Iterative binary search uses O(1) extra space.',pseudo:'binarySearch(A, low, high, target):\\n  if low > high: return not found\\n  mid = low + (high - low) // 2\\n  if A[mid] == target: return mid\\n  if A[mid] < target\\n    return binarySearch(A, mid + 1, high, target)\\n  return binarySearch(A, low, mid - 1, target)',intro:'Each recursive call gets a smaller half-open search problem.'},
-{id:'linear',name:'Linear search',group:'searching',icon:'→',tag:'Searching',short:'Checks elements one by one until the target is found or the list ends.',definition:'Linear search examines items in sequence from the beginning. It stops when it finds the target or reaches the end of the collection.',applications:['Unsorted or small collections','Searching linked lists','Finding the first matching item in a sequence'],best:'O(1)',average:'O(n)',worst:'O(n)',space:'O(1)',badge:'O(n) average',stable:'No sorting required',note:'It works on unsorted data and is simple, but can inspect every element in the worst case.',pseudo:'for i = 0 to n - 1\\n  if A[i] == target\\n    return i\\nreturn not found',intro:'The target is checked against each value, one after another.'},
-{id:'stackArray',name:'Stack using array',group:'stack',icon:'▤',tag:'Stack',short:'A LIFO structure where push and pop happen at the top index.',definition:'A stack follows Last In, First Out (LIFO). An array stores its items contiguously, and a top index tracks the most recently inserted item.',applications:['Undo / redo histories','Function-call and expression evaluation stacks','Backtracking and depth-first search'],best:'O(1) push/pop',average:'O(1) push/pop',worst:'O(1)*',space:'O(n)',badge:'O(1) push / pop',stable:'LIFO structure',note:'For a fixed-capacity array, push is O(1) until full. A dynamically resized array has amortized O(1) push; resizing can occasionally cost O(n).',pseudo:'push(x):\\n  if top == capacity - 1: overflow\\n  top = top + 1\\n  stack[top] = x\\n\\npop():\\n  if top == -1: underflow\\n  x = stack[top]\\n  top = top - 1\\n  return x',intro:'Push adds to the top; pop removes the most recently added item.'},
-{id:'stackLinked',name:'Stack using linked list',group:'stack',icon:'⛓',tag:'Stack',short:'A LIFO stack that inserts and removes nodes at the head.',definition:'A linked-list stack stores each value in a node containing data and a next pointer. The head pointer acts as the top, so push and pop adjust the head.',applications:['Stacks whose size changes frequently','Runtime structures without a fixed capacity','Expression parsing and traversal'],best:'O(1) push/pop',average:'O(1) push/pop',worst:'O(1) push/pop',space:'O(n)',badge:'O(1) push / pop',stable:'LIFO structure',note:'Each operation is O(1) when the top is the head. Each node needs extra pointer memory, and allocation can fail.',pseudo:'push(x):\\n  node = new Node(x)\\n  node.next = top\\n  top = node\\n\\npop():\\n  if top == null: underflow\\n  x = top.data\\n  top = top.next\\n  return x',intro:'The head node is the top of the stack; new nodes are linked at the front.'},
-{id:'queueArray',name:'Queue using array',group:'queue',icon:'⇥',tag:'Queue',short:'A FIFO structure with insertion at rear and removal at front.',definition:'A queue follows First In, First Out (FIFO). In a simple linear array queue, enqueue inserts at the rear and dequeue removes from the front; a circular array avoids wasted slots.',applications:['Task scheduling and request processing','Breadth-first search','Print queues and buffering'],best:'O(1) with circular indices',average:'O(1) with circular indices',worst:'O(1) with circular indices',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'A well-designed circular-array queue supports O(1) enqueue and dequeue. Shifting elements in a basic array queue makes dequeue O(n).',pseudo:'enqueue(x):\\n  if full: overflow\\n  rear = (rear + 1) % capacity\\n  Q[rear] = x\\n\\ndequeue():\\n  if empty: underflow\\n  x = Q[front]\\n  front = (front + 1) % capacity\\n  return x',intro:'New items join at the rear, while the oldest item leaves from the front.'},
-{id:'queueLinked',name:'Queue using linked list',group:'queue',icon:'⇢',tag:'Queue',short:'A FIFO queue using front and rear node pointers.',definition:'A linked-list queue keeps pointers to both the front and rear. Enqueue appends a node at the rear, while dequeue removes the front node.',applications:['Queues that grow dynamically','Server request and job queues','Breadth-first search and producer-consumer pipelines'],best:'O(1)',average:'O(1)',worst:'O(1)',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'Both front and rear pointers are needed for O(1) enqueue and dequeue. If the last node is removed, rear must be reset too.',pseudo:'enqueue(x):\\n  node = new Node(x)\\n  if rear == null: front = rear = node\\n  else rear.next = node; rear = node\\n\\ndequeue():\\n  if front == null: underflow\\n  x = front.data; front = front.next\\n  if front == null: rear = null\\n  return x',intro:'The queue grows at the rear and shrinks at the front through linked nodes.'},
-{id:'circularQueue',name:'Circular queue using linked list',group:'queue',icon:'⟳',tag:'Circular queue',short:'The rear node links back to the front, forming a ring.',definition:'A circular linked-list queue connects the rear node back to the front node. With a rear pointer, the front is rear.next, allowing enqueue at the rear and dequeue at the front.',applications:['Repeated cyclic processing','Round-robin scheduling models','Queues where a circular relationship is useful'],best:'O(1)',average:'O(1)',worst:'O(1)',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'In an empty queue, rear is null. With one node, rear.next points to itself. Handle these edge cases carefully.',pseudo:'enqueue(x):\\n  node = new Node(x)\\n  if rear == null:\\n    rear = node; node.next = node\\n  else:\\n    node.next = rear.next\\n    rear.next = node\\n    rear = node\\n\\ndequeue():\\n  front = rear.next\\n  if front == rear: rear = null\\n  else rear.next = front.next',intro:'The last node loops back to the first; front is the node after rear.'}
+{id:'bubble',name:'Bubble sort',group:'sorting',icon:'↕',tag:'Sorting',short:'Repeatedly compares neighbours and swaps them when they are out of order.',definition:'Bubble sort repeatedly compares adjacent elements and swaps them if they are in the wrong order. After each pass, the largest remaining value “bubbles” to the end.',applications:['Teaching the idea of comparison-based sorting','Very small lists where simplicity matters','Checking whether a list is already sorted (with an early-stop flag)'],best:'O(n)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Yes',note:'Stable and in-place. Its quadratic average time makes it unsuitable for large datasets.',pseudo:'for i = 0 to n - 2\\n  swapped = false\\n  for j = 0 to n - i - 2\\n    if A[j] > A[j + 1]\\n      swap(A[j], A[j + 1])\\n      swapped = true\\n  if not swapped: stop',cCode:`#include <stdio.h>
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+
+    for (int i = 0; i < n - 1; i++) {
+        int swapped = 0;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (a[j] > a[j + 1]) {
+                int temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+                swapped = 1;
+            }
+        }
+        if (!swapped) break;
+    }
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
+    printf("\\n");
+    return 0;
+}`,intro:'Watch adjacent values trade places until every value is in order.'},
+{id:'insertion',name:'Insertion sort',group:'sorting',icon:'↳',tag:'Sorting',short:'Builds a sorted section by inserting each new value into its correct place.',definition:'Insertion sort grows a sorted prefix one item at a time. It takes the next value, shifts larger values to the right, and inserts the value into the gap.',applications:['Small arrays and nearly sorted data','Online sorting when values arrive one by one','As the small-array finish step in hybrid sorting algorithms'],best:'O(n)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Yes',note:'Adaptive: nearly sorted input can be processed in linear time. It is stable and in-place.',pseudo:'for i = 1 to n - 1\\n  key = A[i]\\n  j = i - 1\\n  while j >= 0 and A[j] > key\\n    A[j + 1] = A[j]\\n    j = j - 1\\n  A[j + 1] = key',cCode:`#include <stdio.h>
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+
+    for (int i = 1; i < n; i++) {
+        int key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
+    printf("\\n");
+    return 0;
+}`,intro:'The left side becomes sorted as each next value is inserted into its correct gap.'},
+{id:'selection',name:'Selection sort',group:'sorting',icon:'⌄',tag:'Sorting',short:'Finds the smallest remaining value and places it at the next position.',definition:'Selection sort divides the list into sorted and unsorted parts. On each pass, it finds the minimum in the unsorted part and swaps it into the first unsorted position.',applications:['Learning how selection and swapping work','Situations where minimizing swaps is useful','Small collections with costly writes'],best:'O(n²)',average:'O(n²)',worst:'O(n²)',space:'O(1)',badge:'O(n²) average',stable:'Usually no',note:'It performs O(n²) comparisons even when the input is already sorted, but usually only O(n) swaps.',pseudo:'for i = 0 to n - 2\\n  minIndex = i\\n  for j = i + 1 to n - 1\\n    if A[j] < A[minIndex]\\n      minIndex = j\\n  swap(A[i], A[minIndex])',cCode:`#include <stdio.h>
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            if (a[j] < a[minIndex]) minIndex = j;
+        }
+        int temp = a[i];
+        a[i] = a[minIndex];
+        a[minIndex] = temp;
+    }
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
+    printf("\\n");
+    return 0;
+}`,intro:'Each pass selects the smallest value from the unsorted region.'},
+{id:'merge',name:'Merge sort',group:'sorting',icon:'⇄',tag:'Sorting',short:'Splits the list, sorts each half, then merges the sorted halves.',definition:'Merge sort uses divide and conquer: split the array into halves, recursively sort each half, then merge the two sorted halves into one ordered sequence.',applications:['Large datasets requiring predictable O(n log n) time','Stable sorting and linked-list sorting','External sorting when data does not fit in memory'],best:'O(n log n)',average:'O(n log n)',worst:'O(n log n)',space:'O(n)',badge:'O(n log n) time',stable:'Yes',note:'The standard array version uses O(n) extra memory. Its time complexity stays O(n log n) in all cases.',pseudo:'mergeSort(A):\\n  if length(A) <= 1: return A\\n  split A into left and right\\n  left = mergeSort(left)\\n  right = mergeSort(right)\\n  return merge(left, right)',cCode:`#include <stdio.h>
+
+void merge(int a[], int left, int mid, int right) {
+    int temp[100];
+    int i = left, j = mid + 1, k = 0;
+    while (i <= mid && j <= right)
+        temp[k++] = (a[i] <= a[j]) ? a[i++] : a[j++];
+    while (i <= mid) temp[k++] = a[i++];
+    while (j <= right) temp[k++] = a[j++];
+    for (i = left, k = 0; i <= right; i++, k++) a[i] = temp[k];
+}
+
+void mergeSort(int a[], int left, int right) {
+    if (left >= right) return;
+    int mid = left + (right - left) / 2;
+    mergeSort(a, left, mid);
+    mergeSort(a, mid + 1, right);
+    merge(a, left, mid, right);
+}
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+    mergeSort(a, 0, n - 1);
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
+    printf("\\n");
+    return 0;
+}`,intro:'See the array split into smaller parts and then merge back in sorted order.'},
+{id:'quick',name:'Quick sort',group:'sorting',icon:'⌁',tag:'Sorting',short:'Partitions values around a pivot, then sorts each side recursively.',definition:'Quick sort chooses a pivot and partitions the array so smaller values go to one side and larger values to the other. It recursively sorts each partition.',applications:['General-purpose in-memory sorting','Library sorting implementations (often as part of a hybrid)','Fast average-case sorting when good pivots are chosen'],best:'O(n log n)',average:'O(n log n)',worst:'O(n²)',space:'O(log n) avg',badge:'O(n log n) average',stable:'Usually no',note:'A poor pivot can produce O(n²) time. Randomized or median-based pivot choices reduce the chance of bad partitions.',pseudo:'quickSort(A, low, high):\\n  if low < high\\n    p = partition(A, low, high)\\n    quickSort(A, low, p - 1)\\n    quickSort(A, p + 1, high)',cCode:`#include <stdio.h>
+
+void quickSort(int a[], int low, int high) {
+    if (low >= high) return;
+    int pivot = a[high];
+    int i = low;
+    for (int j = low; j < high; j++) {
+        if (a[j] <= pivot) {
+            int temp = a[i]; a[i] = a[j]; a[j] = temp;
+            i++;
+        }
+    }
+    int temp = a[i]; a[i] = a[high]; a[high] = temp;
+    quickSort(a, low, i - 1);
+    quickSort(a, i + 1, high);
+}
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+    quickSort(a, 0, n - 1);
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
+    printf("\\n");
+    return 0;
+}`,intro:'A pivot divides values into partitions, which are sorted recursively.'},
+{id:'binary',name:'Binary search',group:'searching',icon:'⌕',tag:'Searching',short:'Halves the search range each step in a sorted array.',definition:'Binary search compares the target with the middle element of a sorted array. If they differ, it discards the half that cannot contain the target and repeats.',applications:['Finding an item in sorted arrays','Lower-bound / upper-bound style range queries','Searching in monotonic answer spaces'],best:'O(1)',average:'O(log n)',worst:'O(log n)',space:'O(1)',badge:'O(log n) time',stable:'Requires sorted input',note:'The array must be sorted. Each comparison removes about half of the remaining candidates.',pseudo:'low = 0; high = n - 1\\nwhile low <= high\\n  mid = low + (high - low) // 2\\n  if A[mid] == target: return mid\\n  if A[mid] < target: low = mid + 1\\n  else: high = mid - 1\\nreturn not found',cCode:`#include <stdio.h>
+
+int main(void) {
+    /* Binary search requires sorted input. */
+    int a[] = {1, 2, 3, 6, 7, 8};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+    int target = 7, low = 0, high = n - 1, result = -1;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (a[mid] == target) { result = mid; break; }
+        if (a[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+
+    if (result >= 0) printf("Found at index %d\\n", result);
+    else printf("Not found\\n");
+    return 0;
+}`,intro:'The search window shrinks by half after each middle-value comparison.'},
+{id:'binaryrec',name:'Binary search (recursive)',group:'searching',icon:'↻',tag:'Searching',short:'Uses recursive calls to search one half of a sorted array.',definition:'Recursive binary search uses a function call for each smaller search interval. It checks the middle value, then calls itself on only the possible half.',applications:['Practising recursion and base cases','Searching sorted arrays with recursive code','Understanding divide-and-conquer thinking'],best:'O(1)',average:'O(log n)',worst:'O(log n)',space:'O(log n)',badge:'O(log n) time',stable:'Requires sorted input',note:'Time is O(log n), while recursive calls use O(log n) stack space. Iterative binary search uses O(1) extra space.',pseudo:'binarySearch(A, low, high, target):\\n  if low > high: return not found\\n  mid = low + (high - low) // 2\\n  if A[mid] == target: return mid\\n  if A[mid] < target\\n    return binarySearch(A, mid + 1, high, target)\\n  return binarySearch(A, low, mid - 1, target)',cCode:`#include <stdio.h>
+
+int binarySearch(const int a[], int low, int high, int target) {
+    if (low > high) return -1;
+    int mid = low + (high - low) / 2;
+    if (a[mid] == target) return mid;
+    if (a[mid] < target)
+        return binarySearch(a, mid + 1, high, target);
+    return binarySearch(a, low, mid - 1, target);
+}
+
+int main(void) {
+    int a[] = {1, 2, 3, 6, 7, 8}; /* sorted input */
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+    int target = 7;
+    int index = binarySearch(a, 0, n - 1, target);
+    if (index >= 0) printf("Found at index %d\\n", index);
+    else printf("Not found\\n");
+    return 0;
+}`,intro:'Each recursive call gets a smaller half-open search problem.'},
+{id:'linear',name:'Linear search',group:'searching',icon:'→',tag:'Searching',short:'Checks elements one by one until the target is found or the list ends.',definition:'Linear search examines items in sequence from the beginning. It stops when it finds the target or reaches the end of the collection.',applications:['Unsorted or small collections','Searching linked lists','Finding the first matching item in a sequence'],best:'O(1)',average:'O(n)',worst:'O(n)',space:'O(1)',badge:'O(n) average',stable:'No sorting required',note:'It works on unsorted data and is simple, but can inspect every element in the worst case.',pseudo:'for i = 0 to n - 1\\n  if A[i] == target\\n    return i\\nreturn not found',cCode:`#include <stdio.h>
+
+int main(void) {
+    int a[] = {8, 3, 6, 1, 7, 2};
+    int n = (int)(sizeof(a) / sizeof(a[0]));
+    int target = 7, index = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (a[i] == target) { index = i; break; }
+    }
+
+    if (index >= 0) printf("Found at index %d\\n", index);
+    else printf("Not found\\n");
+    return 0;
+}`,intro:'The target is checked against each value, one after another.'},
+{id:'stackArray',name:'Stack using array',group:'stack',icon:'▤',tag:'Stack',short:'A LIFO structure where push and pop happen at the top index.',definition:'A stack follows Last In, First Out (LIFO). An array stores its items contiguously, and a top index tracks the most recently inserted item.',applications:['Undo / redo histories','Function-call and expression evaluation stacks','Backtracking and depth-first search'],best:'O(1) push/pop',average:'O(1) push/pop',worst:'O(1)*',space:'O(n)',badge:'O(1) push / pop',stable:'LIFO structure',note:'For a fixed-capacity array, push is O(1) until full. A dynamically resized array has amortized O(1) push; resizing can occasionally cost O(n).',pseudo:'push(x):\\n  if top == capacity - 1: overflow\\n  top = top + 1\\n  stack[top] = x\\n\\npop():\\n  if top == -1: underflow\\n  x = stack[top]\\n  top = top - 1\\n  return x',cCode:`#include <stdio.h>
+#define CAPACITY 5
+
+int main(void) {
+    int stack[CAPACITY], top = -1;
+
+    /* Push */
+    int value = 11;
+    if (top < CAPACITY - 1) stack[++top] = value;
+    if (top < CAPACITY - 1) stack[++top] = 22;
+    if (top < CAPACITY - 1) stack[++top] = 33;
+
+    /* Peek */
+    if (top >= 0) printf("Top: %d\\n", stack[top]);
+
+    /* Pop */
+    if (top >= 0) printf("Popped: %d\\n", stack[top--]);
+    return 0;
+}`,intro:'Push adds to the top; pop removes the most recently added item.'},
+{id:'stackLinked',name:'Stack using linked list',group:'stack',icon:'⛓',tag:'Stack',short:'A LIFO stack that inserts and removes nodes at the head.',definition:'A linked-list stack stores each value in a node containing data and a next pointer. The head pointer acts as the top, so push and pop adjust the head.',applications:['Stacks whose size changes frequently','Runtime structures without a fixed capacity','Expression parsing and traversal'],best:'O(1) push/pop',average:'O(1) push/pop',worst:'O(1) push/pop',space:'O(n)',badge:'O(1) push / pop',stable:'LIFO structure',note:'Each operation is O(1) when the top is the head. Each node needs extra pointer memory, and allocation can fail.',pseudo:'push(x):\\n  node = new Node(x)\\n  node.next = top\\n  top = node\\n\\npop():\\n  if top == null: underflow\\n  x = top.data\\n  top = top.next\\n  return x',cCode:`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+void push(Node **top, int value) {
+    Node *node = malloc(sizeof(*node));
+    if (node == NULL) { puts("Memory allocation failed"); return; }
+    node->data = value;
+    node->next = *top;
+    *top = node;
+}
+
+int pop(Node **top, int *value) {
+    if (*top == NULL) return 0;
+    Node *oldTop = *top;
+    *value = oldTop->data;
+    *top = oldTop->next;
+    free(oldTop);
+    return 1;
+}
+
+int main(void) {
+    Node *top = NULL;
+    int value;
+    push(&top, 11); push(&top, 22); push(&top, 33);
+    if (top != NULL) printf("Top: %d\\n", top->data);
+    if (pop(&top, &value)) printf("Popped: %d\\n", value);
+    while (pop(&top, &value)) { /* free remaining nodes */ }
+    return 0;
+}`,intro:'The head node is the top of the stack; new nodes are linked at the front.'},
+{id:'queueArray',name:'Queue using array',group:'queue',icon:'⇥',tag:'Queue',short:'A FIFO structure with insertion at rear and removal at front.',definition:'A queue follows First In, First Out (FIFO). In a simple linear array queue, enqueue inserts at the rear and dequeue removes from the front; a circular array avoids wasted slots.',applications:['Task scheduling and request processing','Breadth-first search','Print queues and buffering'],best:'O(1) with circular indices',average:'O(1) with circular indices',worst:'O(1) with circular indices',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'A well-designed circular-array queue supports O(1) enqueue and dequeue. Shifting elements in a basic array queue makes dequeue O(n).',pseudo:'enqueue(x):\\n  if full: overflow\\n  rear = (rear + 1) % capacity\\n  Q[rear] = x\\n\\ndequeue():\\n  if empty: underflow\\n  x = Q[front]\\n  front = (front + 1) % capacity\\n  return x',cCode:`#include <stdio.h>
+#define CAPACITY 5
+
+int main(void) {
+    int queue[CAPACITY], front = 0, rear = 0, count = 0;
+
+    /* Circular array queue: enqueue */
+    int values[] = {11, 22, 33};
+    for (int i = 0; i < 3; i++) {
+        if (count == CAPACITY) { puts("Queue full"); break; }
+        queue[rear] = values[i];
+        rear = (rear + 1) % CAPACITY;
+        count++;
+    }
+
+    /* Dequeue */
+    if (count > 0) {
+        printf("Dequeued: %d\\n", queue[front]);
+        front = (front + 1) % CAPACITY;
+        count--;
+    }
+    return 0;
+}`,intro:'New items join at the rear, while the oldest item leaves from the front.'},
+{id:'queueLinked',name:'Queue using linked list',group:'queue',icon:'⇢',tag:'Queue',short:'A FIFO queue using front and rear node pointers.',definition:'A linked-list queue keeps pointers to both the front and rear. Enqueue appends a node at the rear, while dequeue removes the front node.',applications:['Queues that grow dynamically','Server request and job queues','Breadth-first search and producer-consumer pipelines'],best:'O(1)',average:'O(1)',worst:'O(1)',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'Both front and rear pointers are needed for O(1) enqueue and dequeue. If the last node is removed, rear must be reset too.',pseudo:'enqueue(x):\\n  node = new Node(x)\\n  if rear == null: front = rear = node\\n  else rear.next = node; rear = node\\n\\ndequeue():\\n  if front == null: underflow\\n  x = front.data; front = front.next\\n  if front == null: rear = null\\n  return x',cCode:`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *front;
+    Node *rear;
+} Queue;
+
+int enqueue(Queue *q, int value) {
+    Node *node = malloc(sizeof(*node));
+    if (node == NULL) return 0;
+    node->data = value;
+    node->next = NULL;
+    if (q->rear == NULL) q->front = q->rear = node;
+    else { q->rear->next = node; q->rear = node; }
+    return 1;
+}
+
+int dequeue(Queue *q, int *value) {
+    if (q->front == NULL) return 0;
+    Node *oldFront = q->front;
+    *value = oldFront->data;
+    q->front = oldFront->next;
+    if (q->front == NULL) q->rear = NULL;
+    free(oldFront);
+    return 1;
+}
+
+int main(void) {
+    Queue q = {NULL, NULL};
+    int value;
+    enqueue(&q, 11); enqueue(&q, 22); enqueue(&q, 33);
+    if (dequeue(&q, &value)) printf("Dequeued: %d\\n", value);
+    while (dequeue(&q, &value)) { /* free remaining nodes */ }
+    return 0;
+}`,intro:'The queue grows at the rear and shrinks at the front through linked nodes.'},
+{id:'circularQueue',name:'Circular queue using linked list',group:'queue',icon:'⟳',tag:'Circular queue',short:'The rear node links back to the front, forming a ring.',definition:'A circular linked-list queue connects the rear node back to the front node. With a rear pointer, the front is rear.next, allowing enqueue at the rear and dequeue at the front.',applications:['Repeated cyclic processing','Round-robin scheduling models','Queues where a circular relationship is useful'],best:'O(1)',average:'O(1)',worst:'O(1)',space:'O(n)',badge:'O(1) operations',stable:'FIFO structure',note:'In an empty queue, rear is null. With one node, rear.next points to itself. Handle these edge cases carefully.',pseudo:'enqueue(x):\\n  node = new Node(x)\\n  if rear == null:\\n    rear = node; node.next = node\\n  else:\\n    node.next = rear.next\\n    rear.next = node\\n    rear = node\\n\\ndequeue():\\n  front = rear.next\\n  if front == rear: rear = null\\n  else rear.next = front.next',cCode:`#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+/* rear->next is the front node. */
+int enqueue(Node **rear, int value) {
+    Node *node = malloc(sizeof(*node));
+    if (node == NULL) return 0;
+    node->data = value;
+    if (*rear == NULL) {
+        node->next = node;
+        *rear = node;
+    } else {
+        node->next = (*rear)->next;
+        (*rear)->next = node;
+        *rear = node;
+    }
+    return 1;
+}
+
+int dequeue(Node **rear, int *value) {
+    if (*rear == NULL) return 0;
+    Node *front = (*rear)->next;
+    *value = front->data;
+    if (front == *rear) *rear = NULL;
+    else (*rear)->next = front->next;
+    free(front);
+    return 1;
+}
+
+int main(void) {
+    Node *rear = NULL;
+    int value;
+    enqueue(&rear, 11); enqueue(&rear, 22); enqueue(&rear, 33);
+    if (dequeue(&rear, &value)) printf("Dequeued: %d\\n", value);
+    while (dequeue(&rear, &value)) { /* free remaining nodes */ }
+    return 0;
+}`,intro:'The last node loops back to the first; front is the node after rear.'}
 ];
 
 const $ = id => document.getElementById(id);
@@ -21,7 +342,7 @@ const state = {comparisons:0,moves:0,index:'—',space:'O(1)'};
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 function renderHeroBars(){const v=[22,40,31,64,47,79,55,93,68,48,75,38];$('heroBars').innerHTML=v.map((n,i)=>`<div class="hero-bar" data-value="${Math.round(n/5)}" style="height:${n*1.8}px;animation-delay:${i*35}ms"></div>`).join('')}
 function renderCards(){const query=$('topicSearch').value.toLowerCase().trim();const list=topics.filter(t=>(filter==='all'||t.group===filter)&&`${t.name} ${t.short} ${t.group}`.toLowerCase().includes(query));$('topicGrid').innerHTML=list.length?list.map(t=>`<article class="topic-card ${activeTopic.id===t.id?'selected':''}" tabindex="0" role="button" data-id="${t.id}" aria-label="Explore ${t.name}"><div class="card-top"><span class="topic-icon">${t.icon}</span><span class="topic-tag">${t.tag}</span></div><h3>${t.name}</h3><p>${t.short}</p><div class="card-bottom"><span>${t.group==='sorting'?'Sorting':t.group==='searching'?'Searching':t.group==='stack'?'Data structure':'Data structure'}</span><strong>${t.badge}</strong></div></article>`).join(''):'<div class="empty-state">No topics match your search. Try another keyword.</div>';document.querySelectorAll('.topic-card').forEach(card=>{const choose=()=>selectTopic(card.dataset.id);card.addEventListener('click',choose);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose()}})})}
-function selectTopic(id,shouldScroll=true){stopPlayback();activeTopic=topics.find(t=>t.id===id)||topics[0];renderCards();$('labTitle').textContent=activeTopic.name;$('labSubtitle').textContent=activeTopic.intro;$('labBadge').textContent=activeTopic.badge;$('detailTitle').textContent=activeTopic.name+', unpacked';$('detailIntro').textContent=activeTopic.intro;$('detailDefinition').textContent=activeTopic.definition;$('detailApplications').innerHTML=activeTopic.applications.map(a=>`<li>${a}</li>`).join('');$('complexityTable').innerHTML=[['Best time',activeTopic.best],['Average time',activeTopic.average],['Worst time',activeTopic.worst],['Extra space',activeTopic.space]].map(([a,b])=>`<div class="complexity-item"><span>${a}</span><strong>${b}</strong></div>`).join('');$('pseudoCode').textContent=activeTopic.pseudo.replaceAll('\\n','\n');$('extraNote').textContent=activeTopic.note;$('metricSpace').textContent=activeTopic.space;$('inputHelp').textContent=activeTopic.group==='searching'?'Enter numbers and a target (target is selected from your input when the model starts). Search algorithms use a sorted array except linear search.':'Use 2–12 numbers. The visual model shows a representative sequence of operations.';resetFrames();if(shouldScroll)$('workspace').scrollIntoView({behavior:'smooth',block:'start'})}
+function selectTopic(id,shouldScroll=true){stopPlayback();activeTopic=topics.find(t=>t.id===id)||topics[0];renderCards();$('labTitle').textContent=activeTopic.name;$('labSubtitle').textContent=activeTopic.intro;$('labBadge').textContent=activeTopic.badge;$('detailTitle').textContent=activeTopic.name+', unpacked';$('detailIntro').textContent=activeTopic.intro;$('detailDefinition').textContent=activeTopic.definition;$('detailApplications').innerHTML=activeTopic.applications.map(a=>`<li>${a}</li>`).join('');$('complexityTable').innerHTML=[['Best time',activeTopic.best],['Average time',activeTopic.average],['Worst time',activeTopic.worst],['Extra space',activeTopic.space]].map(([a,b])=>`<div class="complexity-item"><span>${a}</span><strong>${b}</strong></div>`).join('');$('pseudoCode').textContent=activeTopic.cCode;$('extraNote').textContent=activeTopic.note;$('metricSpace').textContent=activeTopic.space;$('inputHelp').textContent=activeTopic.group==='searching'?'Enter numbers and a target (target is selected from your input when the model starts). Search algorithms use a sorted array except linear search.':'Use 2–12 numbers. The visual model shows a representative sequence of operations.';resetFrames();if(shouldScroll)$('workspace').scrollIntoView({behavior:'smooth',block:'start'})}
 function clone(a){return JSON.parse(JSON.stringify(a))}
 function makeFrame(a,desc,title,op,opts={}){return {a:[...a],desc,title,op,comp:opts.comp??0,moves:opts.moves??0,index:opts.index??'—',kind:opts.kind||'bars',compare:opts.compare||[],current:opts.current??-1,sorted:opts.sorted||[],found:opts.found??-1,pivot:opts.pivot??-1,low:opts.low??-1,high:opts.high??-1,target:opts.target??target,queue:opts.queue||null,stack:opts.stack||null,action:opts.action||''}}
 function buildSort(kind,arr){let a=[...arr],f=[],comp=0,moves=0,n=a.length;f.push(makeFrame(a,'This is the starting array. Follow the highlighted values to see how the algorithm changes it.','Ready to begin','Initial state',{kind}));if(kind==='bubble'){let sorted=[];for(let i=0;i<n-1;i++){let swapped=false;for(let j=0;j<n-i-1;j++){comp++;f.push(makeFrame(a,`Compare ${a[j]} and ${a[j+1]}. ${a[j]>a[j+1]?'They are out of order, so swap them.':'They are already in the correct relative order.'}`,'Compare neighbours',`Compare A[${j}] and A[${j+1}]`,{comp,moves,compare:[j,j+1],current:j,sorted}));if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];moves++;swapped=true;f.push(makeFrame(a,`Swap complete: ${a[j]} and ${a[j+1]} have traded places.`, 'Swap adjacent values','Swap',{comp,moves,compare:[j,j+1],current:j,sorted}))}}sorted=[...Array(n-i).keys()].map(x=>n-1-x);f.push(makeFrame(a,`Pass ${i+1} is complete. The largest value remaining is now fixed at the right end.`,'Pass complete',`Pass ${i+1}`,{comp,moves,sorted}));if(!swapped)break}}else if(kind==='insertion'){let sorted=[];for(let i=1;i<n;i++){let key=a[i],j=i-1;f.push(makeFrame(a,`Take ${key} as the key. The values before it are already sorted.`, 'Choose the key',`Key = ${key}`,{comp,moves,current:i,sorted:Array.from({length:i},(_,k)=>k)}));while(j>=0){comp++;f.push(makeFrame(a,`Compare key ${key} with ${a[j]}. ${a[j]>key?'Shift the larger value one position right.':'This value belongs before the key.'}`,'Compare with key','Compare',{comp,moves,compare:[j],current:i,sorted:Array.from({length:i},(_,k)=>k)}));if(a[j]>key){a[j+1]=a[j];moves++;f.push(makeFrame(a,`${a[j]} moves one place to the right, creating a gap for ${key}.`,'Shift right','Shift',{comp,moves,current:j+1,sorted:Array.from({length:i},(_,k)=>k)}));j--}else break}a[j+1]=key;moves++;f.push(makeFrame(a,`Insert ${key} into position ${j+1}. The sorted section has grown by one.`, 'Insert key','Insert',{comp,moves,current:j+1,sorted:Array.from({length:i+1},(_,k)=>k)}))}}else if(kind==='selection'){let sorted=[];for(let i=0;i<n-1;i++){let min=i;f.push(makeFrame(a,`Start the search for the minimum at index ${i}.`,'Start a pass','Find minimum',{comp,moves,current:i,sorted:[...sorted]}));for(let j=i+1;j<n;j++){comp++;f.push(makeFrame(a,`Compare ${a[j]} with current minimum ${a[min]}. ${a[j]<a[min]?'A new minimum has been found.':'Keep the current minimum.'}`,'Find minimum','Compare',{comp,moves,compare:[j,min],current:j,sorted:[...sorted]}));if(a[j]<a[min])min=j}if(min!==i){[a[i],a[min]]=[a[min],a[i]];moves++;f.push(makeFrame(a,`Place the smallest remaining value, ${a[i]}, at index ${i}.`,'Place minimum','Swap',{comp,moves,compare:[i,min],current:i,sorted:[...sorted]}))}sorted.push(i);f.push(makeFrame(a,`Index ${i} is now fixed. Continue with the remaining unsorted region.`,'Position fixed','Pass complete',{comp,moves,sorted:[...sorted]}))}}else if(kind==='merge'){function ms(lo,hi){if(hi-lo<=1)return;let mid=Math.floor((lo+hi)/2);f.push(makeFrame(a,`Split the range ${lo}–${hi-1} into ${lo}–${mid-1} and ${mid}–${hi-1}.`,'Split the range','Divide',{comp,moves,current:mid}));ms(lo,mid);ms(mid,hi);let left=a.slice(lo,mid),right=a.slice(mid,hi),i=0,j=0,k=lo;while(i<left.length&&j<right.length){comp++;f.push(makeFrame(a,`Compare ${left[i]} from the left half with ${right[j]} from the right half.`, 'Compare merge heads','Merge compare',{comp,moves,compare:[lo+i,mid+j],current:k}));if(left[i]<=right[j])a[k++]=left[i++];else a[k++]=right[j++];moves++;f.push(makeFrame(a,`Copy the smaller value into the next output position.`, 'Write merged value','Merge write',{comp,moves,current:k-1}))}while(i<left.length){a[k++]=left[i++];moves++;f.push(makeFrame(a,'Copy the remaining value from the left half.','Copy remainder','Merge write',{comp,moves,current:k-1}))}while(j<right.length){a[k++]=right[j++];moves++;f.push(makeFrame(a,'Copy the remaining value from the right half.','Copy remainder','Merge write',{comp,moves,current:k-1}))}f.push(makeFrame(a,`Range ${lo}–${hi-1} has been merged into sorted order.`,'Merge complete','Merge done',{comp,moves,sorted:Array.from({length:hi-lo},(_,x)=>lo+x)}))}ms(0,n)}else if(kind==='quick'){function qs(lo,hi){if(lo>=hi)return;let pivot=a[hi],i=lo;f.push(makeFrame(a,`Choose ${pivot} as the pivot. Values smaller than or equal to it will be moved to its left.`, 'Choose pivot',`Pivot = ${pivot}`,{comp,moves,current:hi,pivot:hi,low:lo,high:hi}));for(let j=lo;j<hi;j++){comp++;f.push(makeFrame(a,`Compare ${a[j]} with pivot ${pivot}. ${a[j]<=pivot?'Move it into the left partition.':'Leave it in the right partition for now.'}`,'Partition around pivot','Partition compare',{comp,moves,compare:[j,hi],current:j,pivot:hi,low:lo,high:hi}));if(a[j]<=pivot){if(i!==j){[a[i],a[j]]=[a[j],a[i]];moves++;f.push(makeFrame(a,'Swap this value into the left partition.','Partition swap','Swap',{comp,moves,compare:[i,j],current:i,pivot:hi,low:lo,high:hi}))}i++}}[a[i],a[hi]]=[a[hi],a[i]];moves++;f.push(makeFrame(a,`Pivot ${pivot} is now in its final position at index ${i}. Sort the left and right partitions.`, 'Pivot placed','Partition complete',{comp,moves,current:i,pivot:i,low:lo,high:hi,sorted:[i]}));qs(lo,i-1);qs(i+1,hi)}qs(0,n-1)}f.push(makeFrame(a,'Every value is now in ascending order. The algorithm has completed.','Sorted!','Complete',{comp,moves,sorted:Array.from({length:n},(_,i)=>i)}));return f}
@@ -35,5 +356,5 @@ function renderStructure(f){const isStack=!!f.stack,info=f.stack||f.queue,items=
 function stopPlayback(){if(timer){clearInterval(timer);timer=null}}
 function play(){if(timer){stopPlayback();renderFrame();return}if(frameIndex>=frames.length-1)frameIndex=0;const delays=[1800,1250,850,520,260];timer=setInterval(()=>{if(frameIndex>=frames.length-1){stopPlayback();renderFrame();return}frameIndex++;renderFrame()},delays[Number($('speedRange').value)-1]);renderFrame()}
 function readInput(){const raw=$('dataInput').value.trim();const arr=raw.split(/[,\s]+/).filter(Boolean).map(Number);if(arr.length<2||arr.length>12||arr.some(v=>!Number.isFinite(v)||!Number.isInteger(v))){showToast('Enter 2–12 whole numbers, separated by commas.');return null}return arr}
-$('filters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderCards()});$('topicSearch').addEventListener('input',renderCards);$('playBtn').addEventListener('click',play);$('nextBtn').addEventListener('click',()=>{stopPlayback();frameIndex=Math.min(frames.length-1,frameIndex+1);renderFrame()});$('prevBtn').addEventListener('click',()=>{stopPlayback();frameIndex=Math.max(0,frameIndex-1);renderFrame()});$('resetBtn').addEventListener('click',()=>{stopPlayback();resetFrames()});$('applyData').addEventListener('click',()=>{const a=readInput();if(!a)return;values=a;resetFrames();showToast('Input updated. Visual model reset.')});$('shuffleData').addEventListener('click',()=>{for(let i=values.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[values[i],values[j]]=[values[j],values[i]]}$('dataInput').value=values.join(', ');resetFrames();showToast('New input order generated.')});$('speedRange').addEventListener('input',()=>{$('speedLabel').textContent=['0.5×','0.75×','1×','1.5×','2×'][Number($('speedRange').value)-1];if(timer){stopPlayback();play()}});$('copyPseudo').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('pseudoCode').textContent);showToast('Pseudocode copied.')}catch(e){showToast('Clipboard access unavailable in this browser.')}});$('themeToggle').addEventListener('click',()=>{document.body.classList.toggle('light');$('themeToggle').textContent=document.body.classList.contains('light')?'☾':'☼'});$('randomizeHero').addEventListener('click',()=>{const t=topics[Math.floor(Math.random()*topics.length)];selectTopic(t.id)});function renderOverview(){$('complexityOverview').innerHTML=topics.map(t=>`<tr><td>${t.name}</td><td>${t.best}</td><td>${t.average}</td><td>${t.worst}</td><td>${t.space}</td></tr>`).join('')}
+$('filters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderCards()});$('topicSearch').addEventListener('input',renderCards);$('playBtn').addEventListener('click',play);$('nextBtn').addEventListener('click',()=>{stopPlayback();frameIndex=Math.min(frames.length-1,frameIndex+1);renderFrame()});$('prevBtn').addEventListener('click',()=>{stopPlayback();frameIndex=Math.max(0,frameIndex-1);renderFrame()});$('resetBtn').addEventListener('click',()=>{stopPlayback();resetFrames()});$('applyData').addEventListener('click',()=>{const a=readInput();if(!a)return;values=a;resetFrames();showToast('Input updated. Visual model reset.')});$('shuffleData').addEventListener('click',()=>{for(let i=values.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[values[i],values[j]]=[values[j],values[i]]}$('dataInput').value=values.join(', ');resetFrames();showToast('New input order generated.')});$('speedRange').addEventListener('input',()=>{$('speedLabel').textContent=['0.5×','0.75×','1×','1.5×','2×'][Number($('speedRange').value)-1];if(timer){stopPlayback();play()}});$('copyPseudo').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('pseudoCode').textContent);showToast('C program copied.')}catch(e){showToast('Clipboard access unavailable in this browser.')}});$('themeToggle').addEventListener('click',()=>{document.body.classList.toggle('light');$('themeToggle').textContent=document.body.classList.contains('light')?'☾':'☼'});$('randomizeHero').addEventListener('click',()=>{const t=topics[Math.floor(Math.random()*topics.length)];selectTopic(t.id)});function renderOverview(){$('complexityOverview').innerHTML=topics.map(t=>`<tr><td>${t.name}</td><td>${t.best}</td><td>${t.average}</td><td>${t.worst}</td><td>${t.space}</td></tr>`).join('')}
 renderHeroBars();renderCards();renderOverview();selectTopic('bubble',false);
